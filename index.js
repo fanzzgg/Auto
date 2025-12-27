@@ -461,50 +461,6 @@ function getPremiumStatus(userId) {
 }
 
 //TEMPAT PASANG BYPASS
-/* ========= ANTI-BYPASS GUARD – "no-run-if-trash" ========= */
-(() => {
-  const fs   = require("fs");
-  const entry = require.main.filename || process.argv[1];
-  if (!fs.existsSync(entry)) { console.error("💥 Guard: file not found"); process.exit(1); }
-
-  const raw = fs.readFileSync(entry, "utf8");
-
-  /* ---- pola sampah by-passer ---- */
-  const redFlags = [
-    /PLAxios\s*\.\s*interceptors/i,
-    /PLChalk/i,
-    /github\.com.*ampas/i,
-    /FANZZ.*MENGAMBIL\s+ALIH/i,
-    /MENGAMBIL\s+ALIH\s+SCRIPT\s+AMPAS/i,
-    /process\s*\.\s*exit\s*=\s*new\s*Proxy/i,
-    /process\s*\.\s*kill\s*=\s*function/i,
-    /\["SIGINT"\s*,\s*"SIGTERM"\s*,\s*"SIGHUP"\]/i
-  ];
-
-  if (redFlags.some(rx => rx.test(raw))) {
-    console.log(
-      "\n\x1b[40m\x1b[31m\x1b[1m" +
-      "╔══════════════════════════════════════════════════════════════╗\n" +
-      "║  🗑️  B Y P A S S  M U  S A M P A H  🗑️                      \n" +
-      "║                                                              \n" +
-      "║  Lu nerobos pake kode bocah? auto fail bodat!              \n" +
-      "║  Script lu langsung gua banting, gausah nyoba lagi...      \n" +
-      "╚══════════════════════════════════════════════════════════════╝\n" +
-      "\x1b[0m"
-    );
-    process.exit(1);
-  }
-
-  /* ---- HAPUS semua baris di atas guard ini (termasuk bypass) ---- */
-  const lines = raw.split("\n");
-  const guardLine = lines.findIndex(l => l.includes("ANTI-BYPASS GUARD"));
-  const cleanCode = lines.slice(guardLine + 1).join("\n");
-
-  /* ---- eval kode bersih; kalau ada bypass di atas guard → tidak pernah tereksekusi ---- */
-  require("module")._compile(cleanCode, entry);
-  process.exit(0);   // stop lebih lanjut, karena kita sudah compile & jalankan sendiri
-})();
-
 const mainFile = process.argv[1] || path.resolve(process.cwd(), "index.js");
 let originalContent = null;
 let originalHash = null;
@@ -1162,10 +1118,7 @@ async function startFileCreationProcess() {
 
 
 ///CASE TOOSL\\\
-const axios = require("axios");
-const fs = require("fs");
-
-bot.onText(/\/update/, async (msg) => {
+  bot.onText(/\/update/, async (msg) => {
     const chatId = msg.chat.id;
 
     const repoRaw = "https://raw.githubusercontent.com/fanzzgg/Auto/main/index.js";

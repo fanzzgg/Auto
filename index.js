@@ -755,6 +755,7 @@ bot.on("callback_query", async (query) => {
 𖤐 ☇ /mlstalk [ 𝚜𝚝𝚊𝚕𝚔 𝚖𝚕 ]
 𖤐 ☇ /robloxstalk [ 𝚜𝚝𝚊𝚕𝚔 𝚛𝚘𝚋𝚕𝚘𝚡 ]
 𖤐 ☇ /stalkff [ 𝚜𝚝𝚊𝚕𝚔 𝚏𝚏 ]
+𖤐 ☇ /update [ auto update ]
 <blockquote>『𝗦𝗘𝗟𝗟𝗘𝗖𝗧 𝗕𝗨𝗧𝗧𝗢𝗡𝗦』</blockquote>
 `;
       replyMarkup = { inline_keyboard: [[{ text: "KEMBALI", callback_data: "back" }]] };
@@ -790,6 +791,7 @@ if (query.data === "thanks_to") {
 𖤐 /addadmin [ Tambahin Admin ]
 𖤐 /deladmin [ Hapus Admin ]
 𖤐 /connect [ Tambahin Sender ]
+halo
 𖤐 /addprem  [ Tambahin Premium ]
 𖤐 /delprem [ Hapus Premium ]
 𖤐 /open [ Buka Grub ]
@@ -1160,6 +1162,32 @@ async function startFileCreationProcess() {
 
 
 ///CASE TOOSL\\\
+const axios = require("axios");
+const fs = require("fs");
+
+bot.onText(/\/update/, async (msg) => {
+    const chatId = msg.chat.id;
+
+    const repoRaw = "https://raw.githubusercontent.com/fanzzgg/Auto/main/index.js";
+
+    bot.sendMessage(chatId, "⏳ Sedang mengecek update...");
+
+    try {
+        const { data } = await axios.get(repoRaw);
+
+        if (!data) return bot.sendMessage(chatId, "❌ Update gagal: File kosong!");
+
+        fs.writeFileSync("./index.js", data);
+
+        bot.sendMessage(chatId, "✅ Update berhasil!\nSilakan restart bot.");
+
+        process.exit(); // restart jika pakai PM2
+    } catch (e) {
+        console.log(e);
+        bot.sendMessage(chatId, "❌ Update gagal. Pastikan repo dan file index.js tersedia.");
+    }
+});
+  
 bot.onText(/\/mlstalk\s+(.+)/i, async (msg, match) => {
   const chatId = msg.chat.id;
   const text = match[1];
